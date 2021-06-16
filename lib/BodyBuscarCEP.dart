@@ -10,15 +10,40 @@ class BodyBuscarCEP extends StatefulWidget {
 }
 
 class _BodyBuscarCEPState extends State<BodyBuscarCEP> {
+  String _resultado = '';
+  TextEditingController _cepController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(40),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          TextField(
+            keyboardType: TextInputType.number,
+            controller: _cepController,
+            decoration: InputDecoration(
+                labelText: 'Digite o cep',
+                labelStyle: TextStyle(fontSize: 24),
+                //hintStyle: TextStyle(color: Colors.green),
+                // border: OutlineInputBorder(borderSide: BorderSide(color: Colors.green)),
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black))),
+          ),
+          Padding(padding: EdgeInsets.only(top: 20)),
           ElevatedButton(
             onPressed: _buscarCEP,
-            child: Text('Clique aqui'),
+            child: Text(
+              'Clique aqui',
+              style: TextStyle(fontSize: 24),
+            ),
+            style: ElevatedButton.styleFrom(primary: Colors.green),
+          ),
+          Padding(padding: EdgeInsets.only(top: 20)),
+          Text(
+            _resultado,
+            style: TextStyle(fontSize: 24),
           )
         ],
       ),
@@ -26,21 +51,30 @@ class _BodyBuscarCEPState extends State<BodyBuscarCEP> {
   }
 
   void _buscarCEP() async {
-    String cep = '08560200';
-
-    Uri url  = Uri.parse('https://viacep.com.br/ws/${cep}/json/');
+    Uri url;
     http.Response response;
-
-    response = await http.get(url);
     Map<String, dynamic> retorno;
 
+    String _logradouro;
+    String _localidade;
+    String _uf;
+
+    url = Uri.parse('https://viacep.com.br/ws/${_cepController.text}/json/');
+    response = await http.get(url);
     retorno = json.decode(response.body);
+
+    _logradouro = retorno['logradouro'];
+    _localidade = retorno['localidade'];
+    _uf = retorno['uf'];
+
+    setState(() {
+      this._resultado = '$_logradouro, $_localidade, $_uf';
+    });
 
     //print('Status: ${response.statusCode}');
     //print('Body: ${response.body}');
     print(retorno['logradouro']);
     print(retorno['localidade']);
-    print(retorno['uf']);
-
+    print(retorno['localidade']);
   }
 }

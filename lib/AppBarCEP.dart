@@ -7,6 +7,7 @@ class AppBarCEP extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text('Buscar  CEP'),
+      backgroundColor: Colors.green,
     );
   }
 
